@@ -10,7 +10,7 @@ from skimage.transform import resize
 
 def character_segmentation(plate_like_objects:list):
         # The invert was done so as to convert the black pixel to white pixel and vice versa
-    license_plate = np.invert(plate_like_objects[1])
+    license_plate = np.invert(plate_like_objects[0])
     labelled_plate = measure.label(license_plate)
     fig, ax1 = plt.subplots(1)
     ax1.imshow(license_plate, cmap="gray")
@@ -49,4 +49,4 @@ def character_segmentation(plate_like_objects:list):
             # this is just to keep track of the arrangement of the characters
             column_list.append(x0)
     plt.show()
-    return characters
+    return (characters, column_list)
