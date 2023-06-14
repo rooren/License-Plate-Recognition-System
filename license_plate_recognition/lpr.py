@@ -3,10 +3,15 @@ from character_segmentation import character_segmentation
 import os
 from character_recognition import read_training_data, cross_validation, cross_val_score
 from sklearn.svm import SVC
+import argparse
 
 def main():
-
-    plate_like_objects = get_license_plate_box("test_imgs/car5.jpg")
+    parser = argparse.ArgumentParser(
+                    prog='License-Plate-Recognition-System',
+                    description='License Plate Recognition System using skimage and ML',)
+    parser.add_argument('-f', '--file')
+    # using the given image 
+    plate_like_objects = get_license_plate_box(parser.parse_args().file)
     segmentation_characters, segmentation_col_list = character_segmentation(plate_like_objects)
     current_dir = os.path.dirname(os.path.realpath(__file__))
 

@@ -8,9 +8,10 @@ import matplotlib.patches as patches
 import numpy as np
 from skimage.transform import resize
 
+
 def character_segmentation(plate_like_objects:list):
         # The invert was done so as to convert the black pixel to white pixel and vice versa
-    license_plate = np.invert(plate_like_objects[0])
+    license_plate = np.invert(plate_like_objects[4])
     labelled_plate = measure.label(license_plate)
     fig, ax1 = plt.subplots(1)
     ax1.imshow(license_plate, cmap="gray")
