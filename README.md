@@ -21,7 +21,7 @@ The program was written with python 2.7 and the following python packages are re
 * [Matplotlib](http://matplotlib.org) Matplotlib is a 2D plotting library for python
 
 ## **How to use**
-1. Clone the repository or download the zip `git clone https://github.com/femioladeji/License-Plate-Recognition-Nigerian-vehicles`
+1. Clone the repository or download the zip 
 2. Change to the cloned directory (or extracted directory)
 3. Create a virtual environment with virtualenv
 4. Install all the necessary dependencies by using pip `pip install -r requirements.txt`
