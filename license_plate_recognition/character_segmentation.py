@@ -10,8 +10,9 @@ from skimage.transform import resize
 
 
 def character_segmentation(plate_like_objects:list):
-        # The invert was done so as to convert the black pixel to white pixel and vice versa
-    license_plate = np.invert(plate_like_objects[4])
+    # The invert was done so as to convert the black pixel to white pixel and vice versa
+    license_plate = np.invert(get_license_plate_object(plate_like_objects))
+
     labelled_plate = measure.label(license_plate)
     fig, ax1 = plt.subplots(1)
     ax1.imshow(license_plate, cmap="gray")
@@ -31,9 +32,6 @@ def character_segmentation(plate_like_objects:list):
         y0, x0, y1, x1 = regions.bbox
         region_height = y1 - y0
         region_width = x1 - x0
-        # print("-----------")
-        # print("hight = " + str(region_height))
-        # print("width = " + str(region_width))
 
         if region_height > min_height and region_height < max_height and region_width > min_width and region_width < max_width:
             roi = license_plate[y0:y1, x0:x1]
@@ -51,3 +49,59 @@ def character_segmentation(plate_like_objects:list):
             column_list.append(x0)
     plt.show()
     return (characters, column_list)
+
+def get_license_plate_object(plate_like_objects):
+    if not plate_like_objects:
+        raise LPRError("License plate could not be located")
+
+    if len(plate_like_objects) == 1:
+        return plate_like_objects[0]
+    else:
+        license_plate = validate_plate(plate_like_objects)
+    return license_plate
+
+
+def validate_plate(candidates):
+    """
+    validates the candidate plate objects by using the idea
+    of vertical projection to calculate the sum of pixels across
+    each column and then find the average.
+
+    This method still needs improvement
+
+    Parameters:
+    ------------
+    candidate: 3D Array containing 2D arrays of objects that looks
+    like license plate
+
+    Returns:
+    --------
+    a 2D array of the likely license plate region
+
+    """
+    lowest_average = -1
+    license_plate = []
+    i = -1
+    for candidate in candidates:
+        i = i +1
+        height, width = candidate.shape
+        threshold_value = threshold_otsu(candidate) 
+        thresh_candidate = candidate < threshold_value
+        total_white_pixels = 0
+        for column in range(width):
+            total_white_pixels += sum(thresh_candidate[:, column])
+        
+        average = float(total_white_pixels) / width
+        if average <= lowest_average or lowest_average == -1:
+            lowest_average = average
+            license_plate = candidate
+
+    return license_plate
+
+
+
+class LPRError(Exception):
+    """
+    custom error for LPR class 
+    """
+    pass
